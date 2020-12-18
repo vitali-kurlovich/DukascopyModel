@@ -3,5 +3,5 @@ import XCTest
 import DukascopyModelTests
 
 var tests = [XCTestCaseEntry]()
-tests += DukascopyModelTests.allTests()
+tests += allTests()
 XCTMain(tests)

@@ -27,11 +27,45 @@ struct Tick: Equatable {
 
 public
 struct TicksContainer: Equatable {
-    public let begin: Date
-    public let ticks: [Tick]
+    public var begin: Date {
+        didSet {
+            set(old: oldValue, new: begin)
+        }
+    }
+
+    private(set) var ticks: [Tick]
 
     public init(begin: Date, ticks: [Tick]) {
         self.begin = begin
         self.ticks = ticks
+    }
+}
+
+public
+extension TicksContainer {}
+
+public
+extension TicksContainer {
+    mutating
+    func insert(_: TicksContainer) {}
+}
+
+private
+extension TicksContainer {
+    mutating
+    func set(old: Date, new: Date) {
+        let delta = new.timeIntervalSince(old)
+
+        let increment = Int32(round(delta * 1000))
+
+        guard increment != 0 else {
+            return
+        }
+
+        for index in ticks.startIndex ..< ticks.endIndex {
+            let oldTick = ticks[index]
+            let time = oldTick.time - increment
+            ticks[index] = Tick(time: time, askp: oldTick.askp, bidp: oldTick.bidp, askv: oldTick.askv, bidv: oldTick.bidv)
+        }
     }
 }
