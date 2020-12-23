@@ -15,7 +15,7 @@ jobs:
     osx_image: xcode12.2
     language: swift
     script:
-    - xcodebuild -scheme DukascopyURL test -enableCodeCoverage YES -parallel-testing-enabled YES
+    - xcodebuild -scheme DukascopyModel test -enableCodeCoverage YES -parallel-testing-enabled YES
     after_success:
     - bash <(curl -s https://codecov.io/bash) -X xcodellvm
   - stage: Linux test
