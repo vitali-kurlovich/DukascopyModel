@@ -65,6 +65,48 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertEqual(start ..< end, container.dateRange)
     }
 
+    func testInsertEmpty_1() {
+        let srcBegin = formatter.date(from: "04-04-2019 10:00")!
+        var emptyContainer = TicksContainer(begin: srcBegin, ticks: [])
+
+        let destTicks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let destBegin = formatter.date(from: "04-04-2019 11:00")!
+
+        let destContainer = TicksContainer(begin: destBegin, ticks: destTicks)
+
+        emptyContainer.insert(container: destContainer)
+
+        XCTAssertEqual(emptyContainer.begin, srcBegin)
+        XCTAssertNotEqual(emptyContainer, destContainer)
+
+        XCTAssertTrue(emptyContainer.equal(to: destContainer))
+    }
+
+    func testInsertEmpty_2() {
+        let srcBegin = formatter.date(from: "04-04-2019 10:00")!
+        let emptyContainer = TicksContainer(begin: srcBegin, ticks: [])
+
+        let destTicks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let destBegin = formatter.date(from: "04-04-2019 11:00")!
+
+        var destContainer = TicksContainer(begin: destBegin, ticks: destTicks)
+        let copy = destContainer
+
+        destContainer.insert(container: emptyContainer)
+
+        XCTAssertEqual(copy, destContainer)
+    }
+
     func testInsertToBegin() {
         let ticks: [Tick] = [
             .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
@@ -148,7 +190,12 @@ final class TicksContainerTest: XCTestCase {
     static var allTests = [
         ("testSetDate", testSetDate),
         ("testEqual", testEqual),
+
         ("testDateRange", testDateRange),
+
+        ("testInsertEmpty_1", testInsertEmpty_1),
+        ("testInsertEmpty_2", testInsertEmpty_2),
+
         ("testInsertToBegin", testInsertToBegin),
         ("testInsertToEnd", testInsertToEnd),
     ]
