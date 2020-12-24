@@ -4,8 +4,8 @@ branches:
   - main
 env:
   global:
-  - SWIFT_BRANCH=swift-5.3.1-release
-  - SWIFT_VERSION=swift-5.3.1-RELEASE
+  - SWIFT_BRANCH=swift-5.3.2-release
+  - SWIFT_VERSION=swift-5.3.2-RELEASE
   - CODECOV_TOKEN="b880d61d-d692-48b0-9a86-e0ec1c53ff97"
   - PACKAGE_VERSION=0.0.1
 jobs:

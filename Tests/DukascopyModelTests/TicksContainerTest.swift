@@ -47,6 +47,9 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertNotEqual(srcContainer, dstContainer)
 
         XCTAssertTrue(srcContainer.equal(to: dstContainer))
+
+        let copy = srcContainer
+        XCTAssertTrue(srcContainer.equal(to: copy))
     }
 
     func testDateRange() {
@@ -107,7 +110,7 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertEqual(copy, destContainer)
     }
 
-    func testInsertToBegin() {
+    func testInsertToBegin_1() {
         let ticks: [Tick] = [
             .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
             .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
@@ -147,7 +150,45 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertTrue(container.equal(to: eqContainer))
     }
 
-    func testInsertToEnd() {
+    func testInsertToBegin_2() {
+        let ticks: [Tick] = [
+            .init(time: 1_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let begin = formatter.date(from: "04-04-2019 11:00")!
+
+        var container = TicksContainer(begin: begin, ticks: ticks)
+
+        let srcTicks: [Tick] = [
+            .init(time: 0, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_000_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_100_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let srcBegin = begin
+
+        let srcContainer = TicksContainer(begin: srcBegin, ticks: srcTicks)
+
+        container.insert(container: srcContainer)
+
+        let eqTicks: [Tick] = [
+            .init(time: 0, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_000_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_100_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+
+            .init(time: 1_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let eqContainer = TicksContainer(begin: srcBegin, ticks: eqTicks)
+
+        XCTAssertEqual(container, eqContainer)
+    }
+
+    func testInsertToEnd_1() {
         let ticks: [Tick] = [
             .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
             .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
@@ -187,6 +228,130 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertEqual(srcContainer, eqContainer)
     }
 
+    func testInsertToEnd_2() {
+        let ticks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let begin = formatter.date(from: "04-04-2019 11:00")!
+
+        var container = TicksContainer(begin: begin, ticks: ticks)
+
+        let srcTicks: [Tick] = [
+            .init(time: 2_900_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let srcBegin = begin
+
+        let srcContainer = TicksContainer(begin: srcBegin, ticks: srcTicks)
+
+        container.insert(container: srcContainer)
+
+        let eqTicks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+
+            .init(time: 2_900_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let eqContainer = TicksContainer(begin: srcBegin, ticks: eqTicks)
+
+        XCTAssertEqual(container, eqContainer)
+    }
+
+    func testInsertToMid_1() {
+        let ticks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let begin = formatter.date(from: "04-04-2019 11:00")!
+
+        var container = TicksContainer(begin: begin, ticks: ticks)
+
+        let srcTicks: [Tick] = [
+            .init(time: 1_900_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_100_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_500_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_700_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let srcBegin = begin
+
+        let srcContainer = TicksContainer(begin: srcBegin, ticks: srcTicks)
+
+        container.insert(container: srcContainer)
+
+        let eqTicks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+
+            .init(time: 1_900_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_100_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_500_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_700_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+
+            .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let eqContainer = TicksContainer(begin: srcBegin, ticks: eqTicks)
+
+        XCTAssertEqual(container, eqContainer)
+    }
+
+    func testInsertToMid_2() {
+        let ticks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 7_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 7_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let begin = formatter.date(from: "04-04-2019 10:00")!
+
+        var container = TicksContainer(begin: begin, ticks: ticks)
+
+        let srcTicks: [Tick] = [
+            .init(time: 4_000_000 - 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 4_200_000 - 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 5_000_000 - 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let srcBegin = formatter.date(from: "04-04-2019 11:00")!
+
+        let srcContainer = TicksContainer(begin: srcBegin, ticks: srcTicks)
+
+        container.insert(container: srcContainer)
+
+        let eqTicks: [Tick] = [
+            .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+
+            .init(time: 4_000_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 4_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 5_000_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+
+            .init(time: 7_200_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 7_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let eqContainer = TicksContainer(begin: begin, ticks: eqTicks)
+
+        XCTAssertEqual(container, eqContainer)
+    }
+
     static var allTests = [
         ("testSetDate", testSetDate),
         ("testEqual", testEqual),
@@ -196,8 +361,14 @@ final class TicksContainerTest: XCTestCase {
         ("testInsertEmpty_1", testInsertEmpty_1),
         ("testInsertEmpty_2", testInsertEmpty_2),
 
-        ("testInsertToBegin", testInsertToBegin),
-        ("testInsertToEnd", testInsertToEnd),
+        ("testInsertToBegin_1", testInsertToBegin_1),
+        ("testInsertToBegin_2", testInsertToBegin_2),
+
+        ("testInsertToEnd_1", testInsertToEnd_1),
+        ("testInsertToEnd_2", testInsertToEnd_2),
+
+        ("testInsertToMid_1", testInsertToMid_1),
+        ("testInsertToMid_2", testInsertToMid_2),
     ]
 }
 

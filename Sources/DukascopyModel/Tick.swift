@@ -24,4 +24,3 @@ struct Tick: Equatable {
         self.bidv = bidv
     }
 }
-

@@ -1,6 +1,6 @@
 //
 //  File.swift
-//  
+//
 //
 //  Created by Vitali Kurlovich on 24.12.20.
 //
@@ -81,6 +81,8 @@ extension TicksContainer {
             insertToBegin(container: container)
             return
         }
+
+        insertToMid(container: container)
     }
 }
 
@@ -119,27 +121,58 @@ extension TicksContainer {
 
         ticks.insert(contentsOf: sourceTicks, at: ticks.startIndex)
     }
-    
-    
-    mutating
-    func insertToMid(container: TicksContainer) {
 
-        let srcFirst = container.ticks.first!
-        
+    mutating
+    func insertToMidEqualBegin(container: TicksContainer) {
+        assert(begin == container.begin)
+
+        let srcTicks = container.ticks
+
+        let srcFirst = srcTicks.first!
+
         let lowerIndex = ticks.lastIndex { (tick) -> Bool in
             tick.time < srcFirst.time
         }!
-        
+
         let nextIndex = ticks.index(after: lowerIndex)
-        
-        let srcLast = container.ticks.last!
+
+        let srcLast = srcTicks.last!
         let nextSrcTick = ticks[nextIndex]
-        assert(nextSrcTick.time < srcLast.time)
-        
-        
+
+        assert(srcLast.time < nextSrcTick.time)
+
+        ticks.insert(contentsOf: srcTicks, at: nextIndex)
     }
-    
-    
+
+    mutating
+    func insertToMid(container: TicksContainer) {
+        guard begin != container.begin else {
+            insertToMidEqualBegin(container: container)
+            return
+        }
+
+        let delta = begin.timeIntervalSince(container.begin)
+        let increment = Int32(round(delta * 1000))
+
+        let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
+            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
+        }
+
+        let srcFirst = srcTicks.first!
+
+        let lowerIndex = ticks.lastIndex { (tick) -> Bool in
+            tick.time < srcFirst.time
+        }!
+
+        let nextIndex = ticks.index(after: lowerIndex)
+
+        let srcLast = srcTicks.last!
+        let nextSrcTick = ticks[nextIndex]
+
+        assert(srcLast.time < nextSrcTick.time)
+
+        ticks.insert(contentsOf: srcTicks, at: nextIndex)
+    }
 }
 
 private
