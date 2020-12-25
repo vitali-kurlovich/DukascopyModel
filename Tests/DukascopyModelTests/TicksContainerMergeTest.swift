@@ -508,8 +508,7 @@ final class TicksContainerMergeTest: XCTestCase {
 
         XCTAssertEqual(container, eqContainer)
     }
-    
-    
+
     func testMerge_6() {
         let ticks: [Tick] = [
             .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
@@ -519,19 +518,17 @@ final class TicksContainerMergeTest: XCTestCase {
         ]
 
         let begin = formatter.date(from: "04-04-2019 10:00")!
-        
 
         var container = TicksContainer(begin: begin, ticks: ticks)
 
         let srcBegin = formatter.date(from: "04-04-2019 9:00")!
-        
+
         let srcTicks: [Tick] = [
             .init(time: 1000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
-        .init(time: 1_800_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
-        .init(time: 2_800_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
-        .init(time: 3_600_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1_800_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2_800_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3_600_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
-
 
         let srcContainer = TicksContainer(begin: srcBegin, ticks: srcTicks)
 
@@ -567,8 +564,6 @@ final class TicksContainerMergeTest: XCTestCase {
         ("testMerge_4", testMerge_4),
         ("testMerge_5", testMerge_5),
         ("testMerge_6", testMerge_6),
-        
-        
     ]
 }
 

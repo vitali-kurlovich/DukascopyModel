@@ -90,11 +90,10 @@ public
 extension TicksContainer {
     mutating
     func merge(container: TicksContainer) {
-        
-        guard !self.equal(to: container) else {
+        guard !equal(to: container) else {
             return
         }
-        
+
         guard let sourceRange = container.dateRange else {
             return
         }

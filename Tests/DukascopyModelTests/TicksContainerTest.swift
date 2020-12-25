@@ -30,6 +30,24 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertEqual(container.ticks[2], .init(time: -3_599_998, askp: 1, bidp: 1, askv: 1, bidv: 1))
     }
 
+    func testSetDate_1() {
+        let ticks: [Tick] = [
+            .init(time: 0, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let begin = formatter.date(from: "04-04-2019 11:00")!
+
+        var container = TicksContainer(begin: begin, ticks: ticks)
+
+        let new = formatter.date(from: "04-04-2019 11:00")!.addingTimeInterval(0.0001)
+
+        container.begin = new
+
+        XCTAssertEqual(container.ticks, ticks)
+    }
+
     func testEqual() {
         let ticks: [Tick] = [
             .init(time: 0, askp: 1, bidp: 1, askv: 1, bidv: 1),
@@ -377,6 +395,7 @@ final class TicksContainerTest: XCTestCase {
 
     static var allTests = [
         ("testSetDate", testSetDate),
+        ("testSetDate_1", testSetDate_1),
 
         ("testEqual", testEqual),
         ("testEqual_1", testEqual_1),
