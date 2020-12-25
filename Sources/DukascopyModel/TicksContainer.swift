@@ -86,6 +86,90 @@ extension TicksContainer {
     }
 }
 
+public
+extension TicksContainer {
+    mutating
+    func merge(container: TicksContainer) {
+        
+        guard !self.equal(to: container) else {
+            return
+        }
+        
+        guard let sourceRange = container.dateRange else {
+            return
+        }
+
+        guard let range = dateRange else {
+            insertToEnd(container: container)
+            return
+        }
+
+        if range.upperBound < sourceRange.lowerBound {
+            insertToEnd(container: container)
+            return
+        }
+
+        if sourceRange.upperBound < range.lowerBound {
+            insertToBegin(container: container)
+            return
+        }
+
+        mergeInMid(container: container)
+    }
+}
+
+private
+extension TicksContainer {
+    mutating
+    func mergeInMid(container: TicksContainer) {
+        let delta = begin.timeIntervalSince(container.begin)
+        let increment = Int32(round(delta * 1000))
+
+        let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
+            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
+        }
+
+        var leftIndex = ticks.startIndex
+        var rightIndex = srcTicks.startIndex
+
+        var result: [Tick] = []
+        result.reserveCapacity(ticks.underestimatedCount + srcTicks.underestimatedCount)
+
+        while leftIndex != ticks.endIndex || rightIndex != srcTicks.endIndex {
+            if leftIndex == ticks.endIndex {
+                result.append(contentsOf: srcTicks[rightIndex ..< srcTicks.endIndex])
+                break
+            }
+
+            if rightIndex == srcTicks.endIndex {
+                result.append(contentsOf: ticks[leftIndex ..< ticks.endIndex])
+                break
+            }
+
+            let left = ticks[leftIndex]
+            let right = srcTicks[rightIndex]
+
+            if left.time == right.time {
+                result.append(right)
+                leftIndex = ticks.index(after: leftIndex)
+                rightIndex = srcTicks.index(after: rightIndex)
+                continue
+            }
+
+            if left.time < right.time {
+                result.append(left)
+                leftIndex = ticks.index(after: leftIndex)
+                continue
+            } else {
+                result.append(right)
+                rightIndex = srcTicks.index(after: rightIndex)
+                continue
+            }
+        }
+        ticks = result
+    }
+}
+
 private
 extension TicksContainer {
     mutating

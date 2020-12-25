@@ -52,6 +52,29 @@ final class TicksContainerTest: XCTestCase {
         XCTAssertTrue(srcContainer.equal(to: copy))
     }
 
+    func testEqual_1() {
+        let ticks: [Tick] = [
+            .init(time: 0, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let begin = formatter.date(from: "04-04-2019 11:00")!
+
+        let srcTicks: [Tick] = [
+            .init(time: 0, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 1, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 2, askp: 1, bidp: 1, askv: 1, bidv: 1),
+            .init(time: 3, askp: 1, bidp: 1, askv: 1, bidv: 1),
+        ]
+
+        let srcContainer = TicksContainer(begin: begin, ticks: ticks)
+        let dstContainer = TicksContainer(begin: begin, ticks: srcTicks)
+
+        XCTAssertNotEqual(srcContainer, dstContainer)
+        XCTAssertFalse(srcContainer.equal(to: dstContainer))
+    }
+
     func testDateRange() {
         let ticks: [Tick] = [
             .init(time: 1000, askp: 1, bidp: 1, askv: 1, bidv: 1),
@@ -354,7 +377,9 @@ final class TicksContainerTest: XCTestCase {
 
     static var allTests = [
         ("testSetDate", testSetDate),
+
         ("testEqual", testEqual),
+        ("testEqual_1", testEqual_1),
 
         ("testDateRange", testDateRange),
 
