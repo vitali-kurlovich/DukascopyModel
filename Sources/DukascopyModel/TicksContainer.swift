@@ -120,14 +120,7 @@ extension TicksContainer {
 private
 extension TicksContainer {
     mutating
-    func mergeInMid(container: TicksContainer) {
-        let delta = begin.timeIntervalSince(container.begin)
-        let increment = Int32(round(delta * 1000))
-
-        let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
-            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
-        }
-
+    func mergeInMid<T: RandomAccessCollection>(srcTicks: T) where T.Element == Tick {
         var leftIndex = ticks.startIndex
         var rightIndex = srcTicks.startIndex
 
@@ -166,6 +159,23 @@ extension TicksContainer {
             }
         }
         ticks = result
+    }
+
+    mutating
+    func mergeInMid(container: TicksContainer) {
+        guard begin != container.begin else {
+            mergeInMid(srcTicks: container.ticks)
+            return
+        }
+
+        let delta = begin.timeIntervalSince(container.begin)
+        let increment = Int32(round(delta * 1000))
+
+        let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
+            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
+        }
+
+        mergeInMid(srcTicks: srcTicks)
     }
 }
 
@@ -206,11 +216,7 @@ extension TicksContainer {
     }
 
     mutating
-    func insertToMidEqualBegin(container: TicksContainer) {
-        assert(begin == container.begin)
-
-        let srcTicks = container.ticks
-
+    func insertToMid<T: RandomAccessCollection>(srcTicks: T) where T.Element == Tick {
         let srcFirst = srcTicks.first!
 
         let lowerIndex = ticks.lastIndex { (tick) -> Bool in
@@ -230,7 +236,7 @@ extension TicksContainer {
     mutating
     func insertToMid(container: TicksContainer) {
         guard begin != container.begin else {
-            insertToMidEqualBegin(container: container)
+            insertToMid(srcTicks: container.ticks)
             return
         }
 
@@ -241,20 +247,7 @@ extension TicksContainer {
             .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
         }
 
-        let srcFirst = srcTicks.first!
-
-        let lowerIndex = ticks.lastIndex { (tick) -> Bool in
-            tick.time < srcFirst.time
-        }!
-
-        let nextIndex = ticks.index(after: lowerIndex)
-
-        let srcLast = srcTicks.last!
-        let nextSrcTick = ticks[nextIndex]
-
-        assert(srcLast.time < nextSrcTick.time)
-
-        ticks.insert(contentsOf: srcTicks, at: nextIndex)
+        insertToMid(srcTicks: srcTicks)
     }
 }
 
