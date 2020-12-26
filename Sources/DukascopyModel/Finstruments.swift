@@ -36,11 +36,11 @@ extension Finstruments {
         public let quoteCurrency: String
         public let tags: [String]
 
-        public let historyStartTick: Int
-        public let historyStart10sec: Int
-        public let historyStartMinute: Int
-        public let historyStartHour: Int
-        public let historyStartDay: Int
+        public let historyStartTick: Date
+        public let historyStart10sec: Date
+        public let historyStartMinute: Date
+        public let historyStartHour: Date
+        public let historyStartDay: Date
 
         public let commoditiesPerContract: Int?
         public let unit: String?
