@@ -128,7 +128,7 @@ extension TicksContainer {
 
         let increment = Int32(round(delta * 1000))
 
-        let upperTime = Int32(new.upperBound.timeIntervalSince(new.lowerBound) * 1000)
+        let upperTime = Int32(round(new.upperBound.timeIntervalSince(new.lowerBound) * 1000))
 
         let range = 0 ..< upperTime
 
