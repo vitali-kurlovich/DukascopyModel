@@ -9,51 +9,35 @@ import Foundation
 
 public
 struct TicksContainer: Equatable {
-    public var begin: Date {
+    var timeRange: Range<Date> {
         didSet {
-            set(old: oldValue, new: begin)
+            set(old: oldValue, new: timeRange)
         }
     }
 
     private(set) var ticks: [Tick]
 
-    public init(begin: Date, ticks: [Tick]) {
-        self.begin = begin
-        self.ticks = ticks
+    public init(timeRange: Range<Date>, ticks: [Tick]) {
+        let upperTime = Int32(timeRange.upperBound.timeIntervalSince(timeRange.lowerBound) * 1000)
+
+        let ticksTimeRange = 0 ..< upperTime
+
+        self.timeRange = timeRange
+        self.ticks = ticks.filter { (tick) -> Bool in
+            ticksTimeRange.contains(tick.time)
+        }
     }
 }
 
 public
 extension TicksContainer {
-    func equal(to container: TicksContainer) -> Bool {
-        if self == container {
-            return true
-        }
-
-        if ticks.count != container.ticks.count {
-            return false
-        }
-
-        let delta = begin.timeIntervalSince(container.begin)
-        let increment = Int32(round(delta * 1000))
-
-        let sourceTicks = container.ticks.lazy.map { (tick) -> Tick in
-            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
-        }
-
-        return ticks.elementsEqual(sourceTicks)
-    }
-}
-
-public
-extension TicksContainer {
-    var dateRange: Range<Date>? {
+    var ticksTimeRange: Range<Date>? {
         guard let first = ticks.first, let last = ticks.last else {
             return nil
         }
 
-        let start = begin.addingTimeInterval(TimeInterval(first.time) / 1000)
-        let end = begin.addingTimeInterval(TimeInterval(last.time) / 1000)
+        let start = timeRange.lowerBound.addingTimeInterval(TimeInterval(first.time) / 1000)
+        let end = timeRange.lowerBound.addingTimeInterval(TimeInterval(last.time) / 1000)
 
         return start ..< end
     }
@@ -62,57 +46,7 @@ extension TicksContainer {
 public
 extension TicksContainer {
     mutating
-    func insert(container: TicksContainer) {
-        guard let sourceRange = container.dateRange else {
-            return
-        }
-
-        guard let range = dateRange else {
-            insertToEnd(container: container)
-            return
-        }
-
-        if range.upperBound < sourceRange.lowerBound {
-            insertToEnd(container: container)
-            return
-        }
-
-        if sourceRange.upperBound < range.lowerBound {
-            insertToBegin(container: container)
-            return
-        }
-
-        insertToMid(container: container)
-    }
-}
-
-public
-extension TicksContainer {
-    mutating
     func merge(container: TicksContainer) {
-        guard !equal(to: container) else {
-            return
-        }
-
-        guard let sourceRange = container.dateRange else {
-            return
-        }
-
-        guard let range = dateRange else {
-            insertToEnd(container: container)
-            return
-        }
-
-        if range.upperBound < sourceRange.lowerBound {
-            insertToEnd(container: container)
-            return
-        }
-
-        if sourceRange.upperBound < range.lowerBound {
-            insertToBegin(container: container)
-            return
-        }
-
         mergeInMid(container: container)
     }
 }
@@ -163,12 +97,12 @@ extension TicksContainer {
 
     mutating
     func mergeInMid(container: TicksContainer) {
-        guard begin != container.begin else {
-            mergeInMid(srcTicks: container.ticks)
-            return
-        }
+        let lowerBound = min(timeRange.lowerBound, container.timeRange.lowerBound)
+        let upperBound = max(timeRange.upperBound, container.timeRange.upperBound)
 
-        let delta = begin.timeIntervalSince(container.begin)
+        timeRange = lowerBound ..< upperBound
+
+        let delta = timeRange.lowerBound.timeIntervalSince(container.timeRange.lowerBound)
         let increment = Int32(round(delta * 1000))
 
         let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
@@ -180,93 +114,30 @@ extension TicksContainer {
 }
 
 private
-extension TicksContainer {
-    mutating
-    func insertToEnd(container: TicksContainer) {
-        guard begin != container.begin else {
-            ticks.append(contentsOf: container.ticks)
-            return
-        }
-
-        let delta = begin.timeIntervalSince(container.begin)
-        let increment = Int32(round(delta * 1000))
-
-        let sourceTicks = container.ticks.lazy.map { (tick) -> Tick in
-            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
-        }
-
-        ticks.append(contentsOf: sourceTicks)
-    }
-
-    mutating
-    func insertToBegin(container: TicksContainer) {
-        guard begin != container.begin else {
-            ticks.insert(contentsOf: container.ticks, at: ticks.startIndex)
-            return
-        }
-
-        let delta = begin.timeIntervalSince(container.begin)
-        let increment = Int32(round(delta * 1000))
-
-        let sourceTicks = container.ticks.lazy.map { (tick) -> Tick in
-            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
-        }
-
-        ticks.insert(contentsOf: sourceTicks, at: ticks.startIndex)
-    }
-
-    mutating
-    func insertToMid<T: RandomAccessCollection>(srcTicks: T) where T.Element == Tick {
-        let srcFirst = srcTicks.first!
-
-        let lowerIndex = ticks.lastIndex { (tick) -> Bool in
-            tick.time < srcFirst.time
-        }!
-
-        let nextIndex = ticks.index(after: lowerIndex)
-
-        let srcLast = srcTicks.last!
-        let nextSrcTick = ticks[nextIndex]
-
-        assert(srcLast.time < nextSrcTick.time)
-
-        ticks.insert(contentsOf: srcTicks, at: nextIndex)
-    }
-
-    mutating
-    func insertToMid(container: TicksContainer) {
-        guard begin != container.begin else {
-            insertToMid(srcTicks: container.ticks)
-            return
-        }
-
-        let delta = begin.timeIntervalSince(container.begin)
-        let increment = Int32(round(delta * 1000))
-
-        let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
-            .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
-        }
-
-        insertToMid(srcTicks: srcTicks)
-    }
-}
+extension TicksContainer {}
 
 private
 extension TicksContainer {
     mutating
-    func set(old: Date, new: Date) {
-        let delta = new.timeIntervalSince(old)
-
-        let increment = Int32(round(delta * 1000))
-
-        guard increment != 0 else {
+    func set(old: Range<Date>, new: Range<Date>) {
+        guard old != new, !ticks.isEmpty else {
             return
         }
 
-        for index in ticks.startIndex ..< ticks.endIndex {
-            let oldTick = ticks[index]
-            let time = oldTick.time - increment
-            ticks[index] = Tick(time: time, askp: oldTick.askp, bidp: oldTick.bidp, askv: oldTick.askv, bidv: oldTick.bidv)
+        let delta = new.lowerBound.timeIntervalSince(old.lowerBound)
+
+        let increment = Int32(round(delta * 1000))
+
+        let upperTime = Int32(new.upperBound.timeIntervalSince(new.lowerBound) * 1000)
+
+        let range = 0 ..< upperTime
+
+        ticks = ticks.compactMap { (tick) -> Tick? in
+            let time = tick.time - increment
+            guard range.contains(time) else {
+                return nil
+            }
+            return .init(time: time, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
         }
     }
 }
