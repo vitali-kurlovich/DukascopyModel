@@ -15,6 +15,7 @@ struct TicksContainer: Equatable {
         }
     }
 
+    public
     private(set) var ticks: [Tick]
 
     public init(timeRange: Range<Date>, ticks: [Tick]) {
