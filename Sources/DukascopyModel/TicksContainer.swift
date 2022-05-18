@@ -24,7 +24,7 @@ struct TicksContainer: Equatable {
         let ticksTimeRange = 0 ..< upperTime
 
         self.timeRange = timeRange
-        self.ticks = ticks.filter { (tick) -> Bool in
+        self.ticks = ticks.filter { tick -> Bool in
             ticksTimeRange.contains(tick.time)
         }
     }
@@ -106,7 +106,7 @@ extension TicksContainer {
         let delta = timeRange.lowerBound.timeIntervalSince(container.timeRange.lowerBound)
         let increment = Int32(round(delta * 1000))
 
-        let srcTicks = container.ticks.lazy.map { (tick) -> Tick in
+        let srcTicks = container.ticks.lazy.map { tick -> Tick in
             .init(time: tick.time - increment, askp: tick.askp, bidp: tick.bidp, askv: tick.askv, bidv: tick.bidv)
         }
 
@@ -133,7 +133,7 @@ extension TicksContainer {
 
         let range = 0 ..< upperTime
 
-        ticks = ticks.compactMap { (tick) -> Tick? in
+        ticks = ticks.compactMap { tick -> Tick? in
             let time = tick.time - increment
             guard range.contains(time) else {
                 return nil
