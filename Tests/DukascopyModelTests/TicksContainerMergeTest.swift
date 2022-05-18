@@ -552,25 +552,6 @@ final class TicksContainerMergeTest: XCTestCase {
 
         XCTAssertEqual(container, eqContainer)
     }
-
-    static var allTests = [
-        ("testMergeToBegin_1", testMergeToBegin_1),
-        ("testMergeToBegin_2", testMergeToBegin_2),
-
-        ("testMergeToEnd_1", testMergeToEnd_1),
-        ("testMergeToEnd_2", testMergeToEnd_2),
-        ("testMergeToEnd_3", testMergeToEnd_3),
-        ("testMergeToEnd_4", testMergeToEnd_4),
-
-        ("testMergeToMid_1", testMergeToMid_1),
-        ("testMergeToMid_2", testMergeToMid_2),
-
-        ("testMerge_1", testMerge_1),
-        ("testMerge_2", testMerge_2),
-        ("testMerge_3", testMerge_3),
-        ("testMerge_4", testMerge_4),
-        ("testMerge_5", testMerge_5),
-    ]
 }
 
 private let utc = TimeZone(identifier: "UTC")!

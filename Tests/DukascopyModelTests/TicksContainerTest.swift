@@ -97,12 +97,6 @@ final class TicksContainerTest: XCTestCase {
 
         XCTAssertEqual(container.ticksTimeRange, ticksTimeRange)
     }
-
-    static var allTests = [
-        ("testSetDateRange_1", testSetDateRange_1),
-        ("testSetDateRange_2", testSetDateRange_2),
-        ("testSetDateRange_3", testSetDateRange_3),
-    ]
 }
 
 private let utc = TimeZone(identifier: "UTC")!
