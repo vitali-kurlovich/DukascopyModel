@@ -81,23 +81,3 @@ public struct InstrumentCurrency: Equatable {
         self.quote = quote
     }
 }
-
-public struct Group: Equatable {
-    public let id: String
-    public let title: String
-
-    public let instruments: [Instrument]
-    public let groups: [Group]
-
-    public
-    init(id: String,
-         title: String,
-         instruments: [Instrument] = [],
-         groups: [Group] = [])
-    {
-        self.id = id
-        self.title = title
-        self.instruments = instruments
-        self.groups = groups
-    }
-}
