@@ -32,6 +32,17 @@ public struct Instrument: Equatable {
     }
 }
 
+extension Instrument: Codable {
+    enum CodingKeys: String, CodingKey {
+        case symbol
+        case meta
+        case currency
+        case history
+        case pipValue = "pip"
+        case commoditiesPerContract = "percontract"
+    }
+}
+
 public struct InstrumentMeta: Equatable {
     public let title: String
     public let description: String
@@ -42,6 +53,14 @@ public struct InstrumentMeta: Equatable {
         self.title = title
         self.description = description
         self.tags = tags
+    }
+}
+
+extension InstrumentMeta: Codable {
+    enum CodingKeys: String, CodingKey {
+        case title
+        case description = "desc"
+        case tags
     }
 }
 
@@ -71,6 +90,17 @@ public struct InstrumentHistory: Equatable {
     }
 }
 
+extension InstrumentHistory: Codable {
+    enum CodingKeys: String, CodingKey {
+        case filename = "file"
+        case beginTick = "tick"
+        case begin10sec = "10s"
+        case beginMinute = "1m"
+        case beginHour = "1h"
+        case beginDay = "1d"
+    }
+}
+
 public struct InstrumentCurrency: Equatable {
     public let base: String
     public let quote: String
@@ -81,3 +111,5 @@ public struct InstrumentCurrency: Equatable {
         self.quote = quote
     }
 }
+
+extension InstrumentCurrency: Codable {}
