@@ -24,6 +24,8 @@ public struct Group: Equatable {
     }
 }
 
+extension Group: Codable {}
+
 extension Group: Sequence {
     public typealias Element = Instrument
     public typealias Iterator = GroupIterator
