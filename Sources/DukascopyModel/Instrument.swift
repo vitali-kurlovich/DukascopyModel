@@ -34,10 +34,10 @@ public struct Instrument: Equatable {
 
 extension Instrument: Codable {
     enum CodingKeys: String, CodingKey {
-        case symbol
+        case symbol = "sym"
         case meta
-        case currency
-        case history
+        case currency = "curr"
+        case history = "hist"
         case pipValue = "pip"
         case commoditiesPerContract = "percontract"
     }
@@ -62,6 +62,26 @@ extension InstrumentMeta: Codable {
         case description = "desc"
         case tags
     }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        title = try container.decode(String.self, forKey: .title)
+        description = try container.decode(String.self, forKey: .description)
+        tags = try container.decode([String]?.self, forKey: .tags) ?? []
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(title, forKey: .title)
+
+        try container.encode(description, forKey: .description)
+
+        if !tags.isEmpty {
+            try container.encode(tags, forKey: .tags)
+        }
+    }
 }
 
 public struct InstrumentHistory: Equatable {
@@ -70,7 +90,6 @@ public struct InstrumentHistory: Equatable {
     public let begin10sec: Date
     public let beginMinute: Date
     public let beginHour: Date
-    public let beginDay: Date
 
     public
     init(
@@ -78,15 +97,13 @@ public struct InstrumentHistory: Equatable {
         beginTick: Date,
         begin10sec: Date,
         beginMinute: Date,
-        beginHour: Date,
-        beginDay: Date
+        beginHour: Date
     ) {
         self.filename = filename
         self.beginTick = beginTick
         self.begin10sec = begin10sec
         self.beginMinute = beginMinute
         self.beginHour = beginHour
-        self.beginDay = beginDay
     }
 }
 
@@ -97,7 +114,6 @@ extension InstrumentHistory: Codable {
         case begin10sec = "10s"
         case beginMinute = "1m"
         case beginHour = "1h"
-        case beginDay = "1d"
     }
 }
 
