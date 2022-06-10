@@ -21,3 +21,13 @@ struct Tick: Equatable {
         self.bidv = bidv
     }
 }
+
+extension Tick: Codable {
+    enum CodingKeys: String, CodingKey {
+        case time
+        case askp = "ask"
+        case bidp = "bid"
+        case askv = "vol_ask"
+        case bidv = "vol_bid"
+    }
+}
