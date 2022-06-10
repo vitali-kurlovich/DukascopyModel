@@ -11,7 +11,7 @@ import XCTest
 class GroupIteratorTest: XCTestCase {
     func testGroupsIterator() throws {
         let time = Date(timeIntervalSince1970: 3600.0 * 24 * 365 * 10)
-        let histrory = InstrumentHistory(filename: "file", beginTick: time, begin10sec: time, beginMinute: time, beginHour: time, beginDay: time)
+        let histrory = InstrumentHistory(filename: "file", beginTick: time, begin10sec: time, beginMinute: time, beginHour: time)
 
         let usdbyn = Instrument(symbol: "USDBYN",
                                 meta: .init(title: "USD/BYN",
