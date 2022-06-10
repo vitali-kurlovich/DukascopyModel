@@ -34,12 +34,12 @@ public struct Instrument: Equatable {
 
 extension Instrument: Codable {
     enum CodingKeys: String, CodingKey {
-        case symbol = "sym"
+        case symbol
         case meta
-        case currency = "curr"
-        case history = "hist"
-        case pipValue = "pip"
-        case commoditiesPerContract = "percontract"
+        case currency
+        case history
+        case pipValue
+        case commoditiesPerContract
     }
 }
 
@@ -59,7 +59,7 @@ public struct InstrumentMeta: Equatable {
 extension InstrumentMeta: Codable {
     enum CodingKeys: String, CodingKey {
         case title
-        case description = "desc"
+        case description
         case tags
     }
 
