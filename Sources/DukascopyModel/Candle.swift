@@ -5,22 +5,6 @@
 import Foundation
 
 public
-struct Price: Hashable, Sendable {
-    public let open: Int32
-    public let close: Int32
-    public let low: Int32
-    public let high: Int32
-
-    public
-    init(open: Int32, close: Int32, low: Int32, high: Int32) {
-        self.open = open
-        self.close = close
-        self.low = low
-        self.high = high
-    }
-}
-
-public
 struct Candle: Hashable, Sendable {
     public let time: Int32
     public let price: Price

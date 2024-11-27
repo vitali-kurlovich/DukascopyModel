@@ -9,11 +9,11 @@ import Foundation
 
 public struct QuoteTicksSlice: Hashable, Sendable {
     public let pipValue: Double
-    public let timeRange: Range<Date>
+    public let timeRange: DateInterval
 
     public let ticks: ArraySlice<Tick>
 
-    public init(pipValue: Double, timeRange: Range<Date>, ticks: ArraySlice<Tick>) {
+    public init(pipValue: Double, timeRange: DateInterval, ticks: ArraySlice<Tick>) {
         self.pipValue = pipValue
         self.timeRange = timeRange
         self.ticks = ticks
@@ -44,7 +44,7 @@ extension QuoteTicksSlice: RandomAccessCollection {
 
     public subscript(position: ArraySlice<Tick>.Index) -> QuotesTick {
         let tick = ticks[position]
-        let baseDate = timeRange.lowerBound
+        let baseDate = timeRange.start
         return QuotesTick(tick, baseDate: baseDate, pipValue: pipValue)
     }
 

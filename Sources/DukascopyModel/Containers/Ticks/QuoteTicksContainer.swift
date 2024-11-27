@@ -20,22 +20,19 @@ struct QuoteTicksContainer: Hashable, Sendable {
 
 public
 extension QuoteTicksContainer {
-    var timeRange: Range<Date> {
+    var timeRange: DateInterval {
         container.timeRange
     }
 
-    var ticksTimeRange: Range<Date>? {
+    var ticksTimeRange: DateInterval? {
         container.ticksTimeRange
     }
 }
 
 extension QuoteTicksContainer: RandomAccessCollection {
     public typealias Element = QuotesTick
-
     public typealias Index = Array<Tick>.Index
-
     public typealias SubSequence = QuoteTicksSlice
-
     public typealias Indices = Array<Tick>.Indices
 
     public var startIndex: Index {
@@ -48,7 +45,7 @@ extension QuoteTicksContainer: RandomAccessCollection {
 
     public subscript(position: Index) -> QuotesTick {
         let tick = container.ticks[position]
-        let baseDate = timeRange.lowerBound
+        let baseDate = timeRange.start
         return QuotesTick(tick, baseDate: baseDate, pipValue: pipValue)
     }
 

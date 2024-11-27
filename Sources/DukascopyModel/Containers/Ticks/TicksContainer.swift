@@ -6,7 +6,7 @@ import Foundation
 
 public
 struct TicksContainer: Hashable, Sendable {
-    var timeRange: Range<Date> {
+    var timeRange: DateInterval {
         didSet {
             set(old: oldValue, new: timeRange)
         }
@@ -15,8 +15,8 @@ struct TicksContainer: Hashable, Sendable {
     public
     private(set) var ticks: [Tick]
 
-    public init(timeRange: Range<Date>, ticks: [Tick]) {
-        let upperTime = Int32(timeRange.upperBound.timeIntervalSince(timeRange.lowerBound) * 1000)
+    public init(timeRange: DateInterval, ticks: [Tick]) {
+        let upperTime = Int32(timeRange.start.timeIntervalSince(timeRange.end) * 1000)
 
         let ticksTimeRange = 0 ..< upperTime
 
@@ -29,15 +29,22 @@ struct TicksContainer: Hashable, Sendable {
 
 public
 extension TicksContainer {
-    var ticksTimeRange: Range<Date>? {
+    var ticksTimeRange: DateInterval? {
         guard let first = ticks.first, let last = ticks.last else {
             return nil
         }
 
-        let start = timeRange.lowerBound.addingTimeInterval(TimeInterval(first.time) / 1000)
-        let end = timeRange.lowerBound.addingTimeInterval(TimeInterval(last.time) / 1000)
+        let start = timeRange.start.addingTimeInterval(TimeInterval(first.time) / 1000)
+        let end = timeRange.start.addingTimeInterval(TimeInterval(last.time) / 1000)
 
-        return start ..< end
+        return DateInterval(start: start, end: end)
+    }
+}
+
+public
+extension TicksContainer {
+    var bounds: TicksBounds? {
+        ticks.bounds
     }
 }
 
@@ -95,12 +102,12 @@ extension TicksContainer {
 
     mutating
     func mergeInMid(container: TicksContainer) {
-        let lowerBound = min(timeRange.lowerBound, container.timeRange.lowerBound)
-        let upperBound = max(timeRange.upperBound, container.timeRange.upperBound)
+        let start = min(timeRange.start, container.timeRange.end)
+        let end = max(timeRange.start, container.timeRange.end)
 
-        timeRange = lowerBound ..< upperBound
+        timeRange = DateInterval(start: start, end: end)
 
-        let delta = timeRange.lowerBound.timeIntervalSince(container.timeRange.lowerBound)
+        let delta = timeRange.start.timeIntervalSince(container.timeRange.start)
         let increment = Int32(round(delta * 1000))
 
         let srcTicks = container.ticks.lazy.map { tick -> Tick in
@@ -114,16 +121,16 @@ extension TicksContainer {
 private
 extension TicksContainer {
     mutating
-    func set(old: Range<Date>, new: Range<Date>) {
+    func set(old: DateInterval, new: DateInterval) {
         guard old != new, !ticks.isEmpty else {
             return
         }
 
-        let delta = new.lowerBound.timeIntervalSince(old.lowerBound)
+        let delta = new.start.timeIntervalSince(old.start)
 
         let increment = Int32(round(delta * 1000))
 
-        let upperTime = Int32(round(new.upperBound.timeIntervalSince(new.lowerBound) * 1000))
+        let upperTime = Int32(round(new.start.timeIntervalSince(new.start) * 1000))
 
         let range = 0 ..< upperTime
 
