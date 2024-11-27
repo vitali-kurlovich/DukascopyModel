@@ -5,7 +5,7 @@
 import Foundation
 
 public
-struct TicksContainer: Equatable {
+struct TicksContainer: Hashable, Sendable {
     var timeRange: Range<Date> {
         didSet {
             set(old: oldValue, new: timeRange)

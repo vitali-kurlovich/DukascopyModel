@@ -7,12 +7,7 @@
 
 import Foundation
 
-public struct QuoteTicksSlice: RandomAccessCollection {
-    public typealias Element = QuotesTick
-    public typealias Index = ArraySlice<Tick>.Index
-    public typealias Indices = ArraySlice<Tick>.Indices
-    public typealias SubSequence = QuoteTicksSlice
-
+public struct QuoteTicksSlice: Hashable, Sendable {
     public let pipValue: Double
     public let timeRange: Range<Date>
 
@@ -23,6 +18,13 @@ public struct QuoteTicksSlice: RandomAccessCollection {
         self.timeRange = timeRange
         self.ticks = ticks
     }
+}
+
+extension QuoteTicksSlice: RandomAccessCollection {
+    public typealias Element = QuotesTick
+    public typealias Index = ArraySlice<Tick>.Index
+    public typealias Indices = ArraySlice<Tick>.Indices
+    public typealias SubSequence = QuoteTicksSlice
 
     public var startIndex: ArraySlice<Tick>.Index {
         ticks.startIndex

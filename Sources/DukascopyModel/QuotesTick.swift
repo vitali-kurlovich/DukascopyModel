@@ -8,7 +8,7 @@
 import Foundation
 
 public
-struct QuotesTick: Hashable {
+struct QuotesTick: Hashable, Sendable {
     public let time: Date
     public let ask: Double
     public let bid: Double

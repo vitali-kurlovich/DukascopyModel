@@ -8,7 +8,7 @@
 import Foundation
 
 public
-struct QuoteTicksContainer: Equatable {
+struct QuoteTicksContainer: Hashable, Sendable {
     public var container: TicksContainer
     public let pipValue: Double
 
