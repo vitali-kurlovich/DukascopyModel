@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  TicksContainerMergeTest.swift
 //
 //
 //  Created by Vitali Kurlovich on 24.12.20.

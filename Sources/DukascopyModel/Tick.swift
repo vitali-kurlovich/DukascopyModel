@@ -5,7 +5,7 @@
 import Foundation
 
 public
-struct Tick: Equatable {
+struct Tick: Hashable {
     public let time: Int32
     public let askp: Int32
     public let bidp: Int32

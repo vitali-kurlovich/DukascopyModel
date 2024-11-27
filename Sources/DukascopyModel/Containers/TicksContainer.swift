@@ -112,9 +112,6 @@ extension TicksContainer {
 }
 
 private
-extension TicksContainer {}
-
-private
 extension TicksContainer {
     mutating
     func set(old: Range<Date>, new: Range<Date>) {
