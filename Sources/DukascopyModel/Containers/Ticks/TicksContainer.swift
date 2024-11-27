@@ -16,7 +16,7 @@ struct TicksContainer: Hashable, Sendable {
     private(set) var ticks: [Tick]
 
     public init(timeRange: DateInterval, ticks: [Tick]) {
-        let upperTime = Int32(timeRange.start.timeIntervalSince(timeRange.end) * 1000)
+        let upperTime = Int32(timeRange.end.timeIntervalSince(timeRange.start) * 1000)
 
         let ticksTimeRange = 0 ..< upperTime
 
