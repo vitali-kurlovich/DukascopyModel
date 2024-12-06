@@ -15,7 +15,7 @@ struct CandlesContainer: Hashable, Sendable {
     private(set) var candles: [Candle]
 
     public init(timeRange: DateInterval, candles: [Candle]) {
-        let upperTime = Int32(timeRange.end.timeIntervalSince(timeRange.start) * 1000)
+        let upperTime = Int32(timeRange.duration * 1000)
 
         let ticksTimeRange = 0 ..< upperTime
 

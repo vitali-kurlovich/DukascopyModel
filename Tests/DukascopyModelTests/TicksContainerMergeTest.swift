@@ -19,7 +19,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -31,7 +31,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let srcBegin = formatter.date(from: "04-04-2019 10:00")!
         let srcEnd = formatter.date(from: "04-04-2019 11:00")!
 
-        let srcRange = srcBegin ..< srcEnd
+        let srcRange = DateInterval(start: srcBegin, end: srcEnd)
 
         let srcContainer = TicksContainer(timeRange: srcRange, ticks: srcTicks)
 
@@ -46,7 +46,8 @@ final class TicksContainerMergeTest: XCTestCase {
             .init(time: 2_800_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
 
-        let eqRange = formatter.date(from: "04-04-2019 10:00")! ..< formatter.date(from: "04-04-2019 12:00")!
+        let eqRange = DateInterval(start: formatter.date(from: "04-04-2019 10:00")!,
+                                   end: formatter.date(from: "04-04-2019 12:00")!)
 
         let eqContainer = TicksContainer(timeRange: eqRange, ticks: eqTicks)
 
@@ -63,7 +64,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -104,7 +105,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         let container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -116,7 +117,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let srcBegin = formatter.date(from: "04-04-2019 10:00")!
         let srcEnd = formatter.date(from: "04-04-2019 11:00")!
 
-        let srcRange = srcBegin ..< srcEnd
+        let srcRange = DateInterval(start: srcBegin, end: srcEnd)
 
         var srcContainer = TicksContainer(timeRange: srcRange, ticks: srcTicks)
 
@@ -131,10 +132,13 @@ final class TicksContainerMergeTest: XCTestCase {
             .init(time: 2_800_000 + 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
 
-        let eqRange = formatter.date(from: "04-04-2019 10:00")! ..< formatter.date(from: "04-04-2019 12:00")!
+        let eqRange = DateInterval(start: formatter.date(from: "04-04-2019 10:00")!,
+                                   end: formatter.date(from: "04-04-2019 12:00")!)
 
         let eqContainer = TicksContainer(timeRange: eqRange, ticks: eqTicks)
 
+        XCTAssertEqual(srcContainer.ticks, eqContainer.ticks)
+        
         XCTAssertEqual(srcContainer, eqContainer)
     }
 
@@ -148,7 +152,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -189,7 +193,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -218,7 +222,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -256,7 +260,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -303,7 +307,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 10:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -316,7 +320,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let srcBegin = formatter.date(from: "04-04-2019 11:00")!
         let srcEnd = formatter.date(from: "04-04-2019 12:00")!
 
-        let srcRange = srcBegin ..< srcEnd
+        let srcRange = DateInterval(start: srcBegin, end: srcEnd)
 
         let srcContainer = TicksContainer(timeRange: srcRange, ticks: srcTicks)
 
@@ -351,7 +355,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -390,7 +394,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -428,7 +432,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -469,7 +473,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -516,7 +520,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let begin = formatter.date(from: "04-04-2019 11:00")!
         let end = formatter.date(from: "04-04-2019 12:00")!
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 

@@ -19,7 +19,7 @@ final class TicksContainerTest: XCTestCase {
             .init(time: 2_800_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         let container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -37,7 +37,7 @@ final class TicksContainerTest: XCTestCase {
             .init(time: 3_600_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         let container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -55,7 +55,7 @@ final class TicksContainerTest: XCTestCase {
             .init(time: 3_400_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         var container = TicksContainer(timeRange: range, ticks: ticks)
 
@@ -64,7 +64,7 @@ final class TicksContainerTest: XCTestCase {
         let destBegin = formatter.date(from: "04-04-2019 11:05")!
         let destEnd = formatter.date(from: "04-04-2019 11:30")!
 
-        let destRange = destBegin ..< destEnd
+        let destRange = DateInterval(start: destBegin, end: destEnd)
 
         container.timeRange = destRange
 
@@ -89,11 +89,14 @@ final class TicksContainerTest: XCTestCase {
             .init(time: 3_300_000, askp: 1, bidp: 1, askv: 1, bidv: 1),
         ]
 
-        let range = begin ..< end
+        let range = DateInterval(start: begin, end: end)
 
         let container = TicksContainer(timeRange: range, ticks: ticks)
 
-        let ticksTimeRange = formatter.date(from: "04-04-2019 11:05")! ..< formatter.date(from: "04-04-2019 11:55")!
+        let ticksBegin = formatter.date(from: "04-04-2019 11:05")!
+        let ticksEnd = formatter.date(from: "04-04-2019 11:55")!
+
+        let ticksTimeRange = DateInterval(start: ticksBegin, end: ticksEnd)
 
         XCTAssertEqual(container.ticksTimeRange, ticksTimeRange)
     }
