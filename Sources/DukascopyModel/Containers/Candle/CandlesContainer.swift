@@ -9,7 +9,7 @@ import Foundation
 
 public
 struct CandlesContainer: Hashable, Sendable {
-    var timeRange: DateInterval
+    public private(set) var timeRange: DateInterval
 
     public
     private(set) var candles: [Candle]
@@ -37,5 +37,36 @@ extension CandlesContainer {
         let end = timeRange.start.addingTimeInterval(TimeInterval(last.time) / 1000)
 
         return DateInterval(start: start, end: end)
+    }
+}
+
+extension CandlesContainer: RandomAccessCollection {
+    public typealias Element = Candle
+    public typealias Index = Array<Candle>.Index
+    public typealias Indices = Array<Candle>.Indices
+    public typealias SubSequence = CandlesSlice
+
+    public var startIndex: Index {
+        candles.startIndex
+    }
+
+    public var endIndex: Index {
+        candles.endIndex
+    }
+
+    public func index(before i: Index) -> Index {
+        candles.index(before: i)
+    }
+
+    public func index(after i: Index) -> Index {
+        candles.index(after: i)
+    }
+
+    public subscript(position: Index) -> Candle {
+        candles[position]
+    }
+
+    public subscript(_ range: Range<Self.Index>) -> Self.SubSequence {
+        CandlesSlice(timeRange: timeRange, candles: candles[range])
     }
 }

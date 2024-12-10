@@ -1,5 +1,5 @@
 //
-//  QuoteCandlesContainer.swift
+//  QuoteCandlesAdapter.swift
 //  DukascopyModel
 //
 //  Created by Vitali Kurlovich on 28.11.24.
@@ -8,7 +8,7 @@
 import Foundation
 
 public
-struct QuoteCandlesContainer: Hashable, Sendable {
+struct QuoteCandlesAdapter<CandleData: QuoteCandleProtocol>: Hashable, Sendable {
     public var container: CandlesContainer
     public let pipValue: Double
     public let type: PriceType
@@ -21,7 +21,7 @@ struct QuoteCandlesContainer: Hashable, Sendable {
 }
 
 public
-extension QuoteCandlesContainer {
+extension QuoteCandlesAdapter {
     var timeRange: DateInterval {
         container.timeRange
     }
@@ -31,10 +31,10 @@ extension QuoteCandlesContainer {
     }
 }
 
-extension QuoteCandlesContainer: RandomAccessCollection {
-    public typealias Element = QuotesCandle
+extension QuoteCandlesAdapter: RandomAccessCollection {
+    public typealias Element = CandleData
     public typealias Index = Array<Candle>.Index
-    public typealias SubSequence = QuoteCandlesSlice
+    public typealias SubSequence = QuoteCandlesSliceAdapter<CandleData>
     public typealias Indices = Array<Candle>.Indices
 
     public var startIndex: Index {
@@ -45,14 +45,14 @@ extension QuoteCandlesContainer: RandomAccessCollection {
         container.candles.endIndex
     }
 
-    public subscript(position: Index) -> QuotesCandle {
+    public subscript(position: Index) -> CandleData {
         let candle = container.candles[position]
         let baseDate = timeRange.start
-        return QuotesCandle(candle, baseDate: baseDate, pipValue: pipValue, type: type)
+        return CandleData(candle, baseDate: baseDate, pipValue: pipValue, type: type)
     }
 
     public subscript(bounds: Range<Self.Index>) -> Self.SubSequence {
         let candles = container.candles[bounds]
-        return QuoteCandlesSlice(type: type, pipValue: pipValue, timeRange: timeRange, candles: candles)
+        return QuoteCandlesSliceAdapter(type: type, pipValue: pipValue, timeRange: timeRange, candles: candles)
     }
 }

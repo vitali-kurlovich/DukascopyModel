@@ -1,5 +1,5 @@
 //
-//  QuotesTick.swift
+//  QuoteTick.swift
 //  DukascopyModel
 //
 //  Created by Vitali Kurlovich on 27.11.24.
@@ -8,7 +8,7 @@
 import Foundation
 
 public
-struct QuotesTick: Hashable, Sendable {
+struct QuoteTick: Hashable, Sendable {
     public let time: Date
     public let ask: Double
     public let bid: Double
@@ -24,9 +24,8 @@ struct QuotesTick: Hashable, Sendable {
     }
 }
 
-public
-extension QuotesTick {
-    init(_ tick: Tick, baseDate: Date, pipValue: Double) {
+extension QuoteTick: QuoteTickProtocol {
+    public init(_ tick: Tick, baseDate: Date, pipValue: Double) {
         let time = baseDate.addingTimeInterval(TimeInterval(tick.time) / 1000)
         let ask = Double(tick.askp) * pipValue
         let bid = Double(tick.bidp) * pipValue

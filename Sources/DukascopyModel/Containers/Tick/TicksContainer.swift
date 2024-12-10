@@ -6,7 +6,7 @@ import Foundation
 
 public
 struct TicksContainer: Hashable, Sendable {
-    var timeRange: DateInterval {
+    public private(set) var timeRange: DateInterval {
         didSet {
             set(old: oldValue, new: timeRange)
         }
@@ -24,6 +24,37 @@ struct TicksContainer: Hashable, Sendable {
         self.ticks = ticks.filter { tick -> Bool in
             ticksTimeRange.contains(tick.time)
         }
+    }
+}
+
+extension TicksContainer: RandomAccessCollection {
+    public typealias Element = Tick
+    public typealias Index = Array<Tick>.Index
+    public typealias Indices = Array<Tick>.Indices
+    public typealias SubSequence = TicksSlice
+
+    public var startIndex: Index {
+        ticks.startIndex
+    }
+
+    public var endIndex: Index {
+        ticks.endIndex
+    }
+
+    public func index(before i: Index) -> Index {
+        ticks.index(before: i)
+    }
+
+    public func index(after i: Index) -> Index {
+        ticks.index(after: i)
+    }
+
+    public subscript(position: Index) -> Element {
+        ticks[position]
+    }
+
+    public subscript(_ range: Range<Self.Index>) -> Self.SubSequence {
+        TicksSlice(timeRange: timeRange, ticks: ticks[range])
     }
 }
 
@@ -102,8 +133,8 @@ extension TicksContainer {
 
     mutating
     func mergeInMid(container: TicksContainer) {
-        let start = min(timeRange.start, container.timeRange.end)
-        let end = max(timeRange.start, container.timeRange.end)
+        let start = Swift.min(timeRange.start, container.timeRange.end)
+        let end = Swift.max(timeRange.start, container.timeRange.end)
 
         timeRange = DateInterval(start: start, end: end)
 

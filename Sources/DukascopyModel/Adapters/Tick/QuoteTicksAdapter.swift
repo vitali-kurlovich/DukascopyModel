@@ -1,5 +1,5 @@
 //
-//  QuoteTicksContainer.swift
+//  QuoteTicksAdapter.swift
 //  DukascopyModel
 //
 //  Created by Vitali Kurlovich on 27.11.24.
@@ -8,7 +8,7 @@
 import Foundation
 
 public
-struct QuoteTicksContainer: Hashable, Sendable {
+struct QuoteTicksAdapter<TickData: QuoteTickProtocol>: Hashable, Sendable {
     public var container: TicksContainer
     public let pipValue: Double
 
@@ -19,7 +19,7 @@ struct QuoteTicksContainer: Hashable, Sendable {
 }
 
 public
-extension QuoteTicksContainer {
+extension QuoteTicksAdapter {
     var timeRange: DateInterval {
         container.timeRange
     }
@@ -29,11 +29,11 @@ extension QuoteTicksContainer {
     }
 }
 
-extension QuoteTicksContainer: RandomAccessCollection {
-    public typealias Element = QuotesTick
+extension QuoteTicksAdapter: RandomAccessCollection {
+    public typealias Element = TickData
     public typealias Index = Array<Tick>.Index
-    public typealias SubSequence = QuoteTicksSlice
     public typealias Indices = Array<Tick>.Indices
+    public typealias SubSequence = QuoteTicksSliceAdapter<TickData>
 
     public var startIndex: Index {
         container.ticks.startIndex
@@ -43,20 +43,20 @@ extension QuoteTicksContainer: RandomAccessCollection {
         container.ticks.endIndex
     }
 
-    public subscript(position: Index) -> QuotesTick {
+    public subscript(position: Index) -> TickData {
         let tick = container.ticks[position]
         let baseDate = timeRange.start
-        return QuotesTick(tick, baseDate: baseDate, pipValue: pipValue)
+        return TickData(tick, baseDate: baseDate, pipValue: pipValue)
     }
 
     public subscript(bounds: Range<Self.Index>) -> Self.SubSequence {
         let ticks = container.ticks[bounds]
-        return QuoteTicksSlice(pipValue: pipValue, timeRange: timeRange, ticks: ticks)
+        return QuoteTicksSliceAdapter(pipValue: pipValue, timeRange: timeRange, ticks: ticks)
     }
 }
 
 public
-extension QuoteTicksContainer {
+extension QuoteTicksAdapter {
     mutating
     func merge(container: TicksContainer) {
         self.container.merge(container: container)

@@ -138,7 +138,7 @@ final class TicksContainerMergeTest: XCTestCase {
         let eqContainer = TicksContainer(timeRange: eqRange, ticks: eqTicks)
 
         XCTAssertEqual(srcContainer.ticks, eqContainer.ticks)
-        
+
         XCTAssertEqual(srcContainer, eqContainer)
     }
 

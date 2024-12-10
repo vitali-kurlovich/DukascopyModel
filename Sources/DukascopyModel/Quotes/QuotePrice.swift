@@ -1,12 +1,12 @@
 //
-//  QuotesPrice.swift
+//  QuotePrice.swift
 //  DukascopyModel
 //
 //  Created by Vitali Kurlovich on 28.11.24.
 //
 
 public
-struct QuotesPrice: Hashable, Sendable {
+struct QuotePrice: Hashable, Sendable {
     public let type: PriceType
     public let open: Double
     public let close: Double
